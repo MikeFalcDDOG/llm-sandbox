@@ -18,7 +18,7 @@ from langchain_core.messages import BaseMessage
 from langserve import add_routes
 
 # 1. Load Retriever
-loader = WebBaseLoader("https://docs.smith.langchain.com/user_guide")
+loader = WebBaseLoader(["https://secretdenver.com/foodie-bucket-list-denver/", "https://www.denver.org/food-drink/restaurants/", "https://denver.eater.com/maps/best-restaurants-denver-eater-38"])
 docs = loader.load()
 text_splitter = RecursiveCharacterTextSplitter()
 documents = text_splitter.split_documents(docs)
@@ -29,8 +29,8 @@ retriever = vector.as_retriever()
 # 2. Create Tools
 retriever_tool = create_retriever_tool(
     retriever,
-    "langsmith_search",
-    "Search for information about LangSmith. For any questions about LangSmith, you must use this tool!",
+    "denver_search",
+    "For any questions about Denver, use this tool!",
 )
 search = TavilySearchResults()
 tools = [retriever_tool, search]
