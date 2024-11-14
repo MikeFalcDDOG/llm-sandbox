@@ -12,22 +12,31 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from langserve import add_routes
+
+from ddtrace.llmobs import LLMObs
+from ddtrace import patch
+
 app = FastAPI()
+
+# Enable the integration
+LLMObs.enable(
+    integrations_enabled=True,
+    ml_app="mf-chatbot",
+    api_key = os.environ.get("DD_API_KEY"),
+    site = os.environ.get("DD_SITE"),
+    agentless_enabled = True,
+    env="prod",
+    service="llm-chatbot"
+)
+
+patch(openai=True)
+patch(langchain=True)
 
 llmopenai = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
-# Declare a chain
-# prompt = ChatPromptTemplate.from_messages(
-#     [
-#         ("system", "You are a helpful AI assistant. Please provide a concise list of course with university that suits users question."),
-#         MessagesPlaceholder(variable_name="history"),
-#         ("human", "{human_input}"),
-#     ]
-# )
-
 prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", "You are a helpful AI assistant that recommends courses along with universities to the students. Please provide a concise list of course with university that suits users question."),
+        ("system", "You are a helpful AI assistant that recommends places to eat in denver. Please provide a concise answer for users seeking food options in Denver."),
         MessagesPlaceholder(variable_name="messages"),
     ]
 )

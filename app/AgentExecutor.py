@@ -4,7 +4,6 @@ import os
 from typing import List
 
 from fastapi import FastAPI
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_openai import OpenAIEmbeddings
@@ -26,12 +25,12 @@ from ddtrace import patch
 # Enable the integration
 LLMObs.enable(
     integrations_enabled=True, 
-    ml_app="mf-sandbox", 
+    ml_app="mf-agent",
     api_key = os.environ.get("DD_API_KEY"),
     site = os.environ.get("DD_SITE"),
     agentless_enabled = True,
     env="prod",
-    service="llm-sandbox"
+    service="llm-agent"
 )
 
 patch(openai=True)
