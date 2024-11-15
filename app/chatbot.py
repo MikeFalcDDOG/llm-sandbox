@@ -21,7 +21,7 @@ app = FastAPI()
 # Enable the integration
 LLMObs.enable(
     integrations_enabled=True,
-    ml_app="mf-chatbot",
+    ml_app="mf-sandbox",
     api_key = os.environ.get("DD_API_KEY"),
     site = os.environ.get("DD_SITE"),
     agentless_enabled = True,

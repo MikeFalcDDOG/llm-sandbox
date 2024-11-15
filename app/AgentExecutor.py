@@ -19,13 +19,13 @@ from langchain_core.messages import BaseMessage
 from langserve import add_routes
 
 from ddtrace.llmobs import LLMObs
-from ddtrace.llmobs.decorators import llm, workflow
+from ddtrace.llmobs.decorators import tool, workflow, task
 from ddtrace import patch
 
 # Enable the integration
 LLMObs.enable(
     integrations_enabled=True, 
-    ml_app="mf-agent",
+    ml_app="mf-sandbox",
     api_key = os.environ.get("DD_API_KEY"),
     site = os.environ.get("DD_SITE"),
     agentless_enabled = True,
@@ -37,6 +37,7 @@ patch(openai=True)
 patch(langchain=True)
 
 # 1. Load Retriever
+@task
 def load_retriever():
     loader = WebBaseLoader(["https://secretdenver.com/foodie-bucket-list-denver/", "https://www.denver.org/food-drink/restaurants/", "https://denver.eater.com/maps/best-restaurants-denver-eater-38"])
     docs = loader.load()
@@ -50,11 +51,12 @@ def load_retriever():
     
 
 # 2. Create Tools
+@tool
 def load_tools(ret):
     retriever_tool = create_retriever_tool(
         ret,
         "denver_search",
-        "For any questions about Denver, use this tool!",
+        "For any questions about Denver food, use this tool!",
     )
     search = TavilySearchResults()
     tools = [retriever_tool, search]
@@ -62,7 +64,7 @@ def load_tools(ret):
 
 
 # 3. Create Agent
-@llm(model_name="gpt-3.5-turbo", name="invoke_llm", model_provider="openai")
+@workflow
 def create_agent(tools):
     prompt = hub.pull("hwchase17/openai-functions-agent")
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
