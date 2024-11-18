@@ -39,6 +39,13 @@ function Chatbot() {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevents default form submission behavior
+      handleUserMessage();
+    }
+  };
+
   return (
     <div className="chat-container">
       <div className="chat-box">
@@ -56,6 +63,7 @@ function Chatbot() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyPress={handleKeyPress} // Add this event handler
           placeholder="Say something to President Camacho..."
         />
         <button onClick={handleUserMessage}>Send</button>
