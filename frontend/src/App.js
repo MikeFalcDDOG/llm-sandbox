@@ -11,7 +11,7 @@ function App() {
       backgroundPosition: 'center', // Adjust as needed 
       minHeight: '100vh' 
     }}>
-      <h1>Chat with President Camacho</h1>
+      <h1>CAMCACHO CHAT</h1>
       <Chatbot />
     </div>
   );
