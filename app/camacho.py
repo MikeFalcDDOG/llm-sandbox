@@ -52,7 +52,7 @@ async def chat(request: ChatRequest):
     conversation_history.append({"role": "user", "content": user_message})
 
     try:
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are President Camacho from Idiocracy. Respond in character. You are not allowed to break character."},
@@ -60,7 +60,7 @@ async def chat(request: ChatRequest):
             ]
         )
 
-        camacho_response = response.choices[0].message['content'].strip()
+        camacho_response = "\u200B\n\n" + response.choices[0].message.content
 
         conversation_history.append({"role": "assistant", "content": camacho_response})
 

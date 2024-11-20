@@ -5,7 +5,6 @@ from langchain_openai import ChatOpenAI
 from langchain.schema.runnable import RunnableSequence
 
 from ddtrace.llmobs import LLMObs
-# from ddtrace.llmobs.decorators import LLMObs
 
 app = FastAPI()
 
@@ -39,7 +38,6 @@ plan_and_execute_chain = RunnableSequence(
     planning_prompt | llm,
     execution_prompt | llm
 )
-
 
 @app.post("/planandexecute/")
 async def plan_and_execute_endpoint(request: Request):
