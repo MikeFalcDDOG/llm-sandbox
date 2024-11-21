@@ -37,7 +37,6 @@ patch(openai=True)
 patch(langchain=True)
 
 # 1. Load Retriever
-@task
 def load_retriever():
     loader = WebBaseLoader(["https://secretdenver.com/foodie-bucket-list-denver/", "https://www.denver.org/food-drink/restaurants/", "https://denver.eater.com/maps/best-restaurants-denver-eater-38"])
     docs = loader.load()
@@ -51,7 +50,6 @@ def load_retriever():
     
 
 # 2. Create Tools
-@tool
 def load_tools(ret):
     retriever_tool = create_retriever_tool(
         ret,
@@ -64,7 +62,6 @@ def load_tools(ret):
 
 
 # 3. Create Agent
-@workflow
 def create_agent(tools):
     prompt = hub.pull("hwchase17/openai-functions-agent")
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
@@ -84,10 +81,6 @@ app = FastAPI(
 )
 
 # 5. Adding chain route
-
-# We need to add these input/output schemas because the current AgentExecutor
-# is lacking in schemas.
-
 class Input(BaseModel):
     input: str
     chat_history: List[BaseMessage] = Field(
@@ -105,6 +98,7 @@ add_routes(
     path="/agent",
 )
 
+# start app with `python AgentExecutor.py`
 if __name__ == "__main__":
     import uvicorn
 

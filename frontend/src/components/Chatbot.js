@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const chatBoxRef = useRef(null);
 
   // Default responses if API call fails
   const fallbackResponses = [
@@ -39,16 +40,24 @@ function Chatbot() {
     }
   };
 
-  const handleKeyPress = (e) => {
+  // scroll to the bottom of the chatbox whenever messages update
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Handle Enter key press
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevents default form submission behavior
+      e.preventDefault();
       handleUserMessage();
     }
   };
 
   return (
     <div className="chat-container">
-      <div className="chat-box">
+      <div className="chat-box" ref={chatBoxRef} style={{ overflowY: 'auto', maxHeight: '400px' }}>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -63,7 +72,7 @@ function Chatbot() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress} // Add this event handler
+          onKeyDown={handleKeyDown} // Add this line to handle the Enter key
           placeholder="Say something to President Camacho..."
         />
         <button onClick={handleUserMessage}>Send</button>
